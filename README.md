@@ -11,6 +11,8 @@ trabajo_final_parte2.sql              las 10 consultas de negocio
 trabajo_final_parte2_resultados.txt   la salida de esas consultas
 trabajo_final_parte3.sql              las 6 features para Machine Learning
 trabajo_final_parte3_resultados.txt   la salida de esas consultas
+trabajo_final_parte4.sql              optimización e indices consultas Q2 y Q10
+trabajo_final_parte4_resultados.txt   la salida de la medicion de ambas consultas (ANTES - sin indices y DESPUES - con indices)
 ```
 
 Los datos vienen del dataset [eCommerce behavior data from multi category store](https://www.kaggle.com/datasets/mkechinov/ecommerce-behavior-data-from-multi-category-store) (REES46) de Kaggle.
