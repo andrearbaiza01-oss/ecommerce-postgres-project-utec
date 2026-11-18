@@ -1,0 +1,105 @@
+{
+  "name": "tarea2_medallon_ecommerce_churn",
+  "description": "Pipeline medallon Bronze->Silver->Gold + modelo de churn. Importar con: databricks jobs create --json @99_job_pipeline.json",
+  "max_concurrent_runs": 1,
+  "schedule": {
+    "quartz_cron_expression": "0 0 6 * * ?",
+    "timezone_id": "America/Lima",
+    "pause_status": "PAUSED"
+  },
+  "email_notifications": { "on_failure": [] },
+  "parameters": [
+    { "name": "catalogo", "default": "workspace" },
+    { "name": "prefijo_esquema", "default": "tarea2" },
+    { "name": "modo_ingesta", "default": "volume_files" },
+    { "name": "recarga_completa", "default": "false" }
+  ],
+  "tasks": [
+    {
+      "task_key": "bronze_ingesta",
+      "description": "Ingesta desde Postgres: snapshot de dimensiones + append incremental del event stream",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Shared/tarea2/01_bronze_ingesta",
+        "base_parameters": {
+          "catalogo": "{{job.parameters.catalogo}}",
+          "prefijo_esquema": "{{job.parameters.prefijo_esquema}}",
+          "modo_ingesta": "{{job.parameters.modo_ingesta}}",
+          "recarga_completa": "{{job.parameters.recarga_completa}}"
+        }
+      },
+      "timeout_seconds": 3600,
+      "max_retries": 2,
+      "min_retry_interval_millis": 60000
+    },
+    {
+      "task_key": "silver_limpieza",
+      "description": "Tipado, deduplicacion, cuarentena, dimensiones conformadas y hechos",
+      "depends_on": [ { "task_key": "bronze_ingesta" } ],
+      "notebook_task": {
+        "notebook_path": "/Workspace/Shared/tarea2/02_silver_limpieza",
+        "base_parameters": {
+          "catalogo": "{{job.parameters.catalogo}}",
+          "prefijo_esquema": "{{job.parameters.prefijo_esquema}}"
+        }
+      },
+      "timeout_seconds": 3600,
+      "max_retries": 1
+    },
+    {
+      "task_key": "gold_marts",
+      "description": "Marts de negocio + validacion contra el baseline del Excel + cliente_360",
+      "depends_on": [ { "task_key": "silver_limpieza" } ],
+      "notebook_task": {
+        "notebook_path": "/Workspace/Shared/tarea2/03_gold_marts",
+        "base_parameters": {
+          "catalogo": "{{job.parameters.catalogo}}",
+          "prefijo_esquema": "{{job.parameters.prefijo_esquema}}"
+        }
+      },
+      "timeout_seconds": 3600,
+      "max_retries": 1
+    },
+    {
+      "task_key": "gold_churn_features",
+      "description": "Features point-in-time y etiqueta de churn por snapshots mensuales",
+      "depends_on": [ { "task_key": "gold_marts" } ],
+      "notebook_task": {
+        "notebook_path": "/Workspace/Shared/tarea2/04_gold_churn_features",
+        "base_parameters": {
+          "catalogo": "{{job.parameters.catalogo}}",
+          "prefijo_esquema": "{{job.parameters.prefijo_esquema}}"
+        }
+      },
+      "timeout_seconds": 5400,
+      "max_retries": 1
+    },
+    {
+      "task_key": "gold_churn_model",
+      "description": "Entrenamiento, evaluacion out-of-time, registro MLflow y scoring",
+      "depends_on": [ { "task_key": "gold_churn_features" } ],
+      "notebook_task": {
+        "notebook_path": "/Workspace/Shared/tarea2/05_gold_churn_model",
+        "base_parameters": {
+          "catalogo": "{{job.parameters.catalogo}}",
+          "prefijo_esquema": "{{job.parameters.prefijo_esquema}}"
+        }
+      },
+      "timeout_seconds": 7200,
+      "max_retries": 0
+    },
+    {
+      "task_key": "calidad_y_monitoreo",
+      "description": "Reconciliacion end-to-end, checks y salud del modelo",
+      "depends_on": [ { "task_key": "gold_churn_model" } ],
+      "notebook_task": {
+        "notebook_path": "/Workspace/Shared/tarea2/06_calidad_y_monitoreo",
+        "base_parameters": {
+          "catalogo": "{{job.parameters.catalogo}}",
+          "prefijo_esquema": "{{job.parameters.prefijo_esquema}}"
+        }
+      },
+      "timeout_seconds": 1800,
+      "max_retries": 1
+    }
+  ]
+}

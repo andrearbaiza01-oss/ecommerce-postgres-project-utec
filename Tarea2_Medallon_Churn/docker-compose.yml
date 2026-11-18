@@ -1,0 +1,59 @@
+# ---------------------------------------------------------------------------
+# Plataforma de datos - Tarea 2 (Maestria en Ciencia de Datos)
+# Postgres 16 como capa de persistencia operacional (fuente para Databricks)
+# ---------------------------------------------------------------------------
+services:
+  postgres:
+    image: postgres:16
+    container_name: ecom_tarea2_pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ecommerce_dw}
+      POSTGRES_USER: ${POSTGRES_USER:-ecom}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ecom_2026}
+      TZ: America/Lima
+      PGTZ: America/Lima
+      # Collation/encoding explicitos para soportar tildes y enies
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "${POSTGRES_PORT:-5435}:5432"
+    volumes:
+      - ecom_tarea2_pgdata:/var/lib/postgresql/data
+      - ./sql:/sql:ro
+      - ./data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ecom} -d ${POSTGRES_DB:-ecommerce_dw}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=100"
+      - "-c"
+      - "shared_buffers=256MB"
+      - "-c"
+      - "work_mem=16MB"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ecom_tarea2_pgadmin
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@tarea2.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin_2026}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "${PGADMIN_PORT:-5051}:80"
+    volumes:
+      - ecom_tarea2_pgadmin:/var/lib/pgadmin
+
+volumes:
+  ecom_tarea2_pgdata:
+    name: ecom_tarea2_pgdata
+  ecom_tarea2_pgadmin:
+    name: ecom_tarea2_pgadmin
