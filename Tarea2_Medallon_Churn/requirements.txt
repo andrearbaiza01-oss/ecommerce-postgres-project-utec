@@ -1,0 +1,7 @@
+pandas>=2.2
+openpyxl>=3.1
+psycopg2-binary>=2.9
+SQLAlchemy>=2.0
+numpy>=2.0
+pyarrow>=15.0
+python-dotenv>=1.0

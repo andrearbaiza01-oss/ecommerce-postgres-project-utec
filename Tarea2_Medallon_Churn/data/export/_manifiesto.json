@@ -1,0 +1,232 @@
+{
+  "generado_utc": "2026-11-18T04:48:18.310361+00:00",
+  "formato": "parquet",
+  "objetos": {
+    "raw_ventas_excel": {
+      "archivo": "raw_ventas_excel.parquet",
+      "filas": 30,
+      "columnas": [
+        "raw_id",
+        "fila_excel",
+        "nombre_cliente",
+        "tipo",
+        "pais",
+        "ciudad",
+        "producto_vendido",
+        "categoria_producto",
+        "sucursal",
+        "vendedor_responsable",
+        "cantidad_vendida",
+        "precio_unitario_pen",
+        "metodo_pago",
+        "subtotal",
+        "igv_18",
+        "utilidad",
+        "costo_unitario",
+        "costo_total",
+        "total_de_venta",
+        "venta_total_usd",
+        "ganancia",
+        "estado",
+        "archivo_origen",
+        "hoja_origen",
+        "hash_fila",
+        "ingestion_ts"
+      ],
+      "mb": 0.021
+    },
+    "raw_parametros_excel": {
+      "archivo": "raw_parametros_excel.parquet",
+      "filas": 4,
+      "columnas": [
+        "clave",
+        "valor",
+        "celda",
+        "rotulo_excel",
+        "descripcion",
+        "ingestion_ts"
+      ],
+      "mb": 0.004
+    },
+    "raw_reportes_excel": {
+      "archivo": "raw_reportes_excel.parquet",
+      "filas": 53,
+      "columnas": [
+        "raw_id",
+        "hoja",
+        "reporte",
+        "descripcion",
+        "funcion",
+        "resultado",
+        "fila_excel",
+        "ingestion_ts"
+      ],
+      "mb": 0.007
+    },
+    "core_dim_cliente": {
+      "archivo": "core_dim_cliente.parquet",
+      "filas": 1530,
+      "columnas": [
+        "cliente_sk",
+        "cliente_nk",
+        "nombre_cliente",
+        "tipo_cliente",
+        "pais",
+        "ciudad",
+        "segmento",
+        "origen_registro",
+        "es_cliente_real",
+        "fecha_alta",
+        "ingestion_ts"
+      ],
+      "mb": 0.045
+    },
+    "core_dim_producto": {
+      "archivo": "core_dim_producto.parquet",
+      "filas": 19,
+      "columnas": [
+        "producto_sk",
+        "producto_nk",
+        "nombre_producto",
+        "categoria",
+        "precio_lista_pen",
+        "costo_unitario_pen",
+        "ingestion_ts"
+      ],
+      "mb": 0.006
+    },
+    "core_dim_sucursal": {
+      "archivo": "core_dim_sucursal.parquet",
+      "filas": 3,
+      "columnas": [
+        "sucursal_sk",
+        "sucursal_nk",
+        "nombre",
+        "departamento",
+        "macro_region",
+        "activa",
+        "ingestion_ts"
+      ],
+      "mb": 0.004
+    },
+    "core_dim_vendedor": {
+      "archivo": "core_dim_vendedor.parquet",
+      "filas": 6,
+      "columnas": [
+        "vendedor_sk",
+        "vendedor_nk",
+        "nombre",
+        "sucursal_sk",
+        "ingestion_ts"
+      ],
+      "mb": 0.004
+    },
+    "core_dim_metodo_pago": {
+      "archivo": "core_dim_metodo_pago.parquet",
+      "filas": 5,
+      "columnas": [
+        "metodo_pago_sk",
+        "metodo_pago_nk",
+        "nombre",
+        "instrumento",
+        "es_digital",
+        "ingestion_ts"
+      ],
+      "mb": 0.004
+    },
+    "core_dim_fecha": {
+      "archivo": "core_dim_fecha.parquet",
+      "filas": 1095,
+      "columnas": [
+        "fecha_sk",
+        "fecha",
+        "anio",
+        "trimestre",
+        "mes",
+        "nombre_mes",
+        "semana_iso",
+        "dia",
+        "dia_semana",
+        "nombre_dia",
+        "es_fin_semana",
+        "anio_mes",
+        "primer_dia_mes",
+        "ultimo_dia_mes"
+      ],
+      "mb": 0.021
+    },
+    "core_fact_venta": {
+      "archivo": "core_fact_venta.parquet",
+      "filas": 30,
+      "columnas": [
+        "venta_sk",
+        "fila_excel",
+        "cliente_sk",
+        "producto_sk",
+        "sucursal_sk",
+        "vendedor_sk",
+        "metodo_pago_sk",
+        "cantidad",
+        "precio_unitario_pen",
+        "subtotal_pen",
+        "igv_pen",
+        "utilidad_pen",
+        "costo_unitario_pen",
+        "costo_total_pen",
+        "total_venta_pen",
+        "total_venta_usd",
+        "ganancia_pen",
+        "estado",
+        "es_conversion",
+        "hash_fila",
+        "ingestion_ts"
+      ],
+      "mb": 0.016
+    },
+    "core_parametro_negocio": {
+      "archivo": "core_parametro_negocio.parquet",
+      "filas": 4,
+      "columnas": [
+        "clave",
+        "valor",
+        "unidad",
+        "descripcion",
+        "vigente_desde",
+        "vigente_hasta"
+      ],
+      "mb": 0.004
+    },
+    "stream_evento": {
+      "archivo": "stream_evento.parquet",
+      "filas": 125319,
+      "columnas": [
+        "event_id",
+        "event_uuid",
+        "event_ts",
+        "event_date",
+        "event_type",
+        "cliente_sk",
+        "session_id",
+        "canal",
+        "dispositivo",
+        "producto_sk",
+        "categoria",
+        "cantidad",
+        "precio_unitario_pen",
+        "monto_pen",
+        "metodo_pago_sk",
+        "sucursal_sk",
+        "vendedor_sk",
+        "order_id",
+        "campania",
+        "utm_source",
+        "descuento_pct",
+        "tiempo_sesion_seg",
+        "source_system",
+        "es_sintetico",
+        "ingestion_ts"
+      ],
+      "mb": 8.069
+    }
+  }
+}

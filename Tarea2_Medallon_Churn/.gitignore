@@ -1,0 +1,12 @@
+# Credenciales locales: usar .env.example como plantilla
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Sistema
+.DS_Store
+Thumbs.db
